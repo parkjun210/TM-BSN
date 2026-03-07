@@ -1,0 +1,31 @@
+# Output and checkpoints
+output/
+benchmark/
+benchmark_sidd/
+ckpt/
+validation/
+dataset/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+
+# Data
+*.tfrecords
+*.mat
+*.lmdb/
+*.mdb
+
+# Experiment outputs
+erf_outputs/
+ERF/
+wandb/
+
+# TensorFlow legacy files
+make_tfrecord.py
+data_loader.py
