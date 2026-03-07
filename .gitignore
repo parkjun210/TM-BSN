@@ -2,7 +2,6 @@
 output/
 benchmark/
 benchmark_sidd/
-ckpt/
 validation/
 dataset/
 
