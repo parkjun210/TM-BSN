@@ -32,7 +32,7 @@ def main():
     parser.add_argument("--sub_name", type=str, default='1st', help='sub name of experiments')
     parser.add_argument("--resume", type=str, default=None, help="Path to checkpoint to resume training from")
     parser.add_argument('--desc', type=str, default='', help='Experiment description for wandb logging')
-    parser.add_argument("--h_set", type=int, nargs='+', default=[1, 2], help='hole sizes for validation')
+    parser.add_argument("--h_set", type=int, nargs='+', default=[1, 2, 3, 4, 5, 6], help='hole sizes for validation')
 
     args = parser.parse_args()
 

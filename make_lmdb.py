@@ -173,8 +173,8 @@ def make_lmdb_DND(train_dir, patch_size, stride, offset=10):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Generate LMDB for training")
     parser.add_argument("--dataset", type=str, required=True, choices=['SIDD', 'DND'], help='dataset type')
-    parser.add_argument("--patch_size", type=int, default=480, help='patch size')
-    parser.add_argument("--stride", type=int, default=120, help='stride')
+    parser.add_argument("--patch_size", type=int, default=256, help='patch size')
+    parser.add_argument("--stride", type=int, default=96, help='stride')
     args = parser.parse_args()
 
     if args.dataset == 'SIDD':

@@ -1,7 +1,6 @@
 # Output and checkpoints
 output/
 benchmark/
-benchmark_sidd/
 validation/
 dataset/
 
