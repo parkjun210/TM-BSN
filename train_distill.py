@@ -40,7 +40,7 @@ def main():
     # Distillation args
     parser.add_argument("--teacher_ckpt", type=str, required=True, help="Path to pretrained TMBSN checkpoint")
     parser.add_argument("--pad", type=int, default=16, help='padding size for teacher input')
-    parser.add_argument("--h_set", type=int, nargs='+', default=[1, 2], help='hole sizes for teacher forward_outs')
+    parser.add_argument("--h_set", type=int, nargs='+', default=[2, 3, 4, 5, 6], help='hole sizes for teacher forward_outs')
     parser.add_argument("--recharge", action="store_true", help="Apply Recharger to teacher outputs; if not set, use raw teacher outputs as targets")
 
     args = parser.parse_args()
