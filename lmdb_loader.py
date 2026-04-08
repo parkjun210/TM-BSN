@@ -31,18 +31,22 @@ class LMDBDataset(Dataset):
         self.patch_size = patch_size
         self.augment = augment
 
-        # Open LMDB environment (readonly, no lock for multi-worker compatibility)
-        self.env = lmdb.open(
+        # LMDB env is opened lazily per worker process. Sharing an env handle
+        # across forked DataLoader workers causes segfaults, so __init__ must
+        # not retain an open env.
+        self.env = None
+
+        # Read metadata via a temporary env, then close it.
+        env = lmdb.open(
             lmdb_path,
             readonly=True,
             lock=False,
             readahead=False,
             meminit=False
         )
-
-        # Read metadata
-        with self.env.begin(write=False) as txn:
+        with env.begin(write=False) as txn:
             meta = pickle.loads(txn.get(b'__meta__'))
+        env.close()
 
         self.num_samples = meta['num_samples']
         self.original_patch_size = meta['patch_size']
@@ -52,10 +56,22 @@ class LMDBDataset(Dataset):
         self.np_dtype = np.uint8 if self.dtype == 'uint8' else np.float32
         self.need_crop = self.patch_size < self.original_patch_size
 
+    def _init_env(self):
+        """Open the LMDB env on first access from the current (worker) process."""
+        if self.env is None:
+            self.env = lmdb.open(
+                self.lmdb_path,
+                readonly=True,
+                lock=False,
+                readahead=False,
+                meminit=False
+            )
+
     def __len__(self):
         return self.num_samples
 
     def __getitem__(self, idx):
+        self._init_env()
         key = f'{idx:08d}'.encode('ascii')
 
         with self.env.begin(write=False) as txn:
@@ -100,7 +116,7 @@ class LMDBDataset(Dataset):
         return np.ascontiguousarray(patch)
 
     def __del__(self):
-        if hasattr(self, 'env'):
+        if getattr(self, 'env', None) is not None:
             self.env.close()
 
 

@@ -22,14 +22,14 @@ import wandb
 
 def main():
     parser = argparse.ArgumentParser(description="TM-BSN Knowledge Distillation Training")
-    parser.add_argument("--batchsize", type=int, default=4, help="Training batch size")
+    parser.add_argument("--batchsize", type=int, default=8, help="Training batch size")
     parser.add_argument("--patchsize", type=int, default=128, help='training patch size')
     parser.add_argument("--dataset", type=str, default='SIDD', help='dataset SIDD or DND')
     parser.add_argument("--lmdb", type=str, required=True, help='path to lmdb directory')
     parser.add_argument("--print_every", type=int, default=1000, help='print step')
     parser.add_argument("--log_every", type=int, default=100, help='log step')
     parser.add_argument("--val_every", type=int, default=10000, help='validation step')
-    parser.add_argument("--maxiter", type=int, default=500000, help="Number of training iterations")
+    parser.add_argument("--maxiter", type=int, default=200000, help="Number of training iterations")
     parser.add_argument("--gpu", type=int, default=0, help="GPU number")
     parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
     parser.add_argument("--main_name", type=str, default='temp', help='main name of experiments')
@@ -92,7 +92,7 @@ def main():
     print(f"Total NBD parameters: {sum(p.numel() for p in NBD.parameters())}")
 
     optimizer_NBD = torch.optim.Adam(NBD.parameters(), lr=float(args.lr))
-    scheduler_NBD = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer_NBD, T_max=args.maxiter)
+    scheduler_NBD = CosineDecayScheduler(optimizer_NBD, float(args.lr), 100000, 100000, float(1e-6))
 
     NBD.train()
 
